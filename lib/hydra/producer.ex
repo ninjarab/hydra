@@ -5,11 +5,17 @@ defmodule Hydra.Producer do
     GenStage.start_link(__MODULE__, :state_doesnt_matter, name: __MODULE__)
   end
 
-  def init(state), do: {:producer, state}
+  def init(_state) do
+    :ets.new(:hydra, [:bag, :public, :named_table])
+    {:ok, s} = Queries.Symbol.fetch()
 
-  def handle_demand(demand, _state) do
-    {:ok, symbols} = Queries.Symbol.fetch()
+    symbols = Enum.filter(s, & &1.is_enabled)
+    IO.inspect(length(symbols), label: "SYMBOLS LENGTH")
 
-    {:noreply, symbols, length(symbols) + demand}
+    {:producer, symbols}
+  end
+
+  def handle_demand(demand, state) do
+    {:noreply, state, length(state) + demand}
   end
 end

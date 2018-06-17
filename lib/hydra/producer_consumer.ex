@@ -10,7 +10,7 @@ defmodule Hydra.ProducerConsumer do
   end
 
   def handle_subscribe(:producer, opts, from, producers) do
-    pending = opts[:max_demand] || 1
+    pending = opts[:max_demand] || 80
     interval = opts[:interval] || 1000
 
     producers = Map.put(producers, from, {pending, interval})
@@ -54,9 +54,9 @@ defmodule Hydra.ProducerConsumer do
 
   defp fetch_prices(events) do
     Parallel.pmap(events, fn event ->
-      {:ok, data} = Queries.Chart.fetch(event.symbol)
-
-      %{symbol: event.symbol, data: data}
+      with {:ok, data} <- Queries.Chart.fetch(event.symbol) do
+        %{symbol: event.symbol, data: data}
+      end
     end)
   end
 end
