@@ -6,16 +6,14 @@
 use Mix.Config
 
 # General application configuration
-config :hydra,
-  ecto_repos: [Hydra.Repo]
+config :hydra, ecto_repos: [Hydra.Repo]
 
 # Configures the endpoint
 config :hydra, HydraWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "sII9Td+TiYUhgX6S3f3f76jSOp0TnnLFPKfc1Wfe/yu+h4ad18q7T/fnQxc1Yqw3",
   render_errors: [view: HydraWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Hydra.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Hydra.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -24,4 +22,4 @@ config :logger, :console,
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"
